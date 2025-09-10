@@ -5,11 +5,11 @@ from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC 
 from selenium.webdriver.support.ui import WebDriverWait,Select
-//from selenium.webdriver.common.action_chains import ActionChains
+#from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import (StaleElementReferenceException,ElementNotInteractableException,ElementClickInterceptedException,NoSuchElementException,WebDriverException,TimeoutException)
 import time
 import sqlite3
-//import datetime 
+#import datetime 
 import traceback
 import sys 
 print("Selenium script is running...")
