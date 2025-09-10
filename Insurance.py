@@ -14,6 +14,9 @@ import traceback
 import sys 
 print("Selenium script is running...")
 
+
+#USING DUMMY DATA FOR INITIAL CHECKING OF FUNCTIONALITY 
+
 conn=sqlite3.connect("details.db")
 conn.row_factory=sqlite3.Row#Must come after connect 
 cursor=conn.cursor()
