@@ -173,12 +173,12 @@ try:
     rto_dropdown=driver.find_element(By.XPATH,"//label[contains(text(), 'RTO')]/following-sibling::ng-select")
     rto_dropdown.click()
     option_to_select='TS-13'
-    panels = driver.find_elements(By.CLASS_NAME, "ng-dropdown-panel")
-    print("Dropdown panels found:", len(panels))
-    for i, panel in enumerate(panels):
-        print(f"Panel {i+1}:")
-        print(panel.text)  # prints the visible text inside the panel
-        print(panel.get_attribute('outerHTML')) 
+    # panels = driver.find_elements(By.CLASS_NAME, "ng-dropdown-panel")
+    # print("Dropdown panels found:", len(panels))
+    # for i, panel in enumerate(panels):
+    #     print(f"Panel {i+1}:")
+    #     print(panel.text)  # prints the visible text inside the panel
+    #     print(panel.get_attribute('outerHTML')) 
     option = WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, f"//div[contains(@class,'ng-dropdown-panel')]//div[contains(@class,'ng-option')]//span[contains(text(),'{option_to_select}')]")))
     option.click()
 
@@ -191,6 +191,83 @@ try:
     month=driver.find_element(By.XPATH,"//label[contains(text(),'Manufacturing Month')]/following-sibling::select")
     month_sel=Select(month)
     month_sel.select_by_visible_text('March')
+
+    #Registration Date 
+    date_input = driver.find_element(By.XPATH, "//label[contains(text(),'Purchase/Registration Date')]/preceding::input[1]")
+    date_input.click()
+
+    # calendars = driver.find_elements(By.CLASS_NAME, "ngb-dp")
+    # print("Calendars found:", len(calendars))
+    # for i, cal in enumerate(calendars):
+    #     print(f"Calendar {i+1}:")
+    #     print(cal.get_attribute("outerHTML"))
+
+    driver.execute_script(""" 
+    arguments[0].value = '10-09-2025';
+    arguments[0].dispatchEvent(new Event('input', { bubbles: true }));
+    arguments[0].dispatchEvent(new Event('change', { bubbles: true }));
+    """, date_input)
+    #basically faking a real user typing + finishing the input, not just dumping text inside.
+    #input → keeps the framework’s data model in sync with what you see.
+    #change → triggers validation, saves, or dependent logic.
+
+    #Policy Holder type(radio buttons)
+    if ("Individual"=="Individual"):
+        driver.find_element(By.ID,"policy_holder_type_1").click()
+    else:
+        driver.find_element(By.ID,"policy_holder_type_2").click()
+
+    #OD Discount(dropdown) 
+    od_dis=driver.find_element(By.XPATH,"//label[contains(text(),'OD Discount')]/following-sibling::select")
+    Select(od_dis).select_by_visible_text("35")
+
+    #Current IDV(textbox)
+    idv=driver.find_element(By.XPATH,"//label[contains(text(),'Enter Current IDV')]/following-sibling::input")
+    idv.send_keys("100800")
+
+    #TP PD (checkbox)
+    if ('yes'=='yes'):
+        tp=driver.find_element(By.XPATH,"//label[contains(text(),'TP PD')]/preceding-sibling::input")    
+        tp.click()
+
+    #CKYC DETAILS 
+
+    #KYC Docs(dd)
+    kyc=driver.find_element(By.XPATH,"//label[contains(text(),'KYC Documents')]/following-sibling::select")
+    Select(kyc).select_by_visible_text('Aadhaar Number')
+
+    #Number on KYC docx(text)
+    certificate = driver.find_element(By.XPATH, "//input[@formcontrolname='certificate_no']")
+    certificate.send_keys("698312829484")
+
+    #DOB(calendar)
+    dob=driver.find_element(By.XPATH,"//label[contains(text(),'Date of Birth')]/preceding::input[1]")
+    dob.click()
+    driver.execute_script(""" 
+    arguments[0].value = '09-07-1987';
+    arguments[0].dispatchEvent(new Event('input', { bubbles: true }));
+    arguments[0].dispatchEvent(new Event('change', { bubbles: true }));
+    """, dob)
+
+    #PEP(radio)
+    if ('no'=='yes'):
+        driver.find_element(By.ID,"pep_yes").click()
+    else:
+        driver.find_element(By.ID,"pep_no").click()
+
+    #PREVIOUS POLICY DETAILS    
+
+    #Change in ownership in the last year (radio)
+    if('no'=='yes'):
+        driver.find_element(By.ID,"change_owner_ship_yes").click()
+    else:
+        driver.find_element(By.ID,"change_owner_ship_no").click()
+
+    #Do you have previous policy(radio)
+    if ('no'=='yes'):
+        driver.find_element(By.ID,"previous_policy_yes").click()
+    else:
+        driver.find_element(By.ID,"previous_policy_no").click()  
 
 
 
