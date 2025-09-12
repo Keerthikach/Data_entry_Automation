@@ -100,7 +100,7 @@ try:
     print(driver.current_url)
 
     #Selecting policy type(radio button)
-    if 'Renew'=='New':
+    if 'New'=='New':
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "policy_type_1")))
         driver.find_element(By.ID,"policy_type_1").click() 
     else:
@@ -113,7 +113,7 @@ try:
     subtype_dropdown = driver.find_element(By.XPATH, "//label[contains(text(), 'Select Option')]/following-sibling::ng-select")
     #print(driver.find_element(By.XPATH, "//label[contains(text(), 'Select Option')]/following-sibling::ng-select"))
     subtype_dropdown.click()   
-    option_to_select='SAOD'
+    option_to_select='PACKAGE'
 
     # panels = driver.find_elements(By.CLASS_NAME, "ng-dropdown-panel")
     # print("Dropdown panels found:", len(panels))
@@ -130,7 +130,7 @@ try:
     #select tenure (dynamic dropdown)
     tenure_dropdown=driver.find_element(By.XPATH,"//label[contains(text(), 'Select Tenure')]/following-sibling::ng-select")
     tenure_dropdown.click()
-    option_to_select='STANDALONEOD'
+    option_to_select='BUNDLED'
     option = WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, f"//div[contains(@class,'ng-dropdown-panel')]//div[contains(@class,'ng-option')]//b[contains(text(),'{option_to_select}')]")))
     option.click()
 
@@ -175,7 +175,7 @@ try:
     WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH,"//label[contains(text(), 'RTO')]/following-sibling::ng-select")))
     rto_dropdown=driver.find_element(By.XPATH,"//label[contains(text(), 'RTO')]/following-sibling::ng-select")
     rto_dropdown.click()
-    option_to_select='TS-13'
+    option_to_select='TS-11'
     # panels = driver.find_elements(By.CLASS_NAME, "ng-dropdown-panel")
     # print("Dropdown panels found:", len(panels))
     # for i, panel in enumerate(panels):
@@ -188,12 +188,12 @@ try:
     #Manufacture Year 
     year=driver.find_element(By.XPATH,"//label[contains(text(),'Manufacturing Year')]/following-sibling::select")
     year_sel=Select(year)
-    year_sel.select_by_visible_text('2023')
+    year_sel.select_by_visible_text('2025')
 
     #manufacture Month
     month=driver.find_element(By.XPATH,"//label[contains(text(),'Manufacturing Month')]/following-sibling::select")
     month_sel=Select(month)
-    month_sel.select_by_visible_text('March')
+    month_sel.select_by_visible_text('September')
 
     #Registration Date 
     date_input = driver.find_element(By.XPATH, "//label[contains(text(),'Purchase/Registration Date')]/preceding::input[1]")
@@ -206,7 +206,7 @@ try:
     #     print(cal.get_attribute("outerHTML"))
 
     driver.execute_script(""" 
-    arguments[0].value = '10-09-2025';
+    arguments[0].value = '08-09-2025';
     arguments[0].dispatchEvent(new Event('input', { bubbles: true }));
     arguments[0].dispatchEvent(new Event('change', { bubbles: true }));
     """, date_input)
@@ -222,16 +222,33 @@ try:
 
     #OD Discount(dropdown) 
     od_dis=driver.find_element(By.XPATH,"//label[contains(text(),'OD Discount')]/following-sibling::select")
-    Select(od_dis).select_by_visible_text("35")
+    Select(od_dis).select_by_visible_text("0")
 
     #Current IDV(textbox)
-    idv=driver.find_element(By.XPATH,"//label[contains(text(),'Enter Current IDV')]/following-sibling::input")
-    idv.send_keys("100800")
+    if ('New'=='New'):
+        WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//label[contains(text(),'Invoice Price')]/following-sibling::input")))
+        inv=driver.find_element(By.XPATH,"//label[contains(text(),'Invoice Price')]/following-sibling::input")
+        inv.send_keys("78000")
+    else:    
+        WebDriverWait(driver,10).until(EC.presence_of_element_located((By.XPATH,"//label[contains(text(),'Enter Current IDV')]/following-sibling::input")))
+        idv=driver.find_element(By.XPATH,"//label[contains(text(),'Enter Current IDV')]/following-sibling::input")
+        idv.send_keys("108000")
 
     #TP PD (checkbox)
-    if ('yes'=='yes'):
+    if ('no'=='yes'):
         tp=driver.find_element(By.XPATH,"//label[contains(text(),'TP PD')]/preceding-sibling::input")    
         tp.click()
+
+    #CPA(radio)
+    if ('1'=='1'):
+        driver.find_element(By.ID,"1_Year_cpa").click()
+    elif('2'=='2'):
+        driver.find_element(By.ID,"2_Year_cpa").click()
+    elif ('5'=='5'):
+        driver.find_element(By.ID,"5_Year_cpa").click()
+    else:
+        driver.find_element(By.ID,"None_cpa").click()    
+        
 
     #CKYC DETAILS 
 
@@ -261,16 +278,103 @@ try:
     #PREVIOUS POLICY DETAILS    
 
     #Change in ownership in the last year (radio)
-    if('no'=='yes'):
-        driver.find_element(By.ID,"change_owner_ship_yes").click()
-    else:
-        driver.find_element(By.ID,"change_owner_ship_no").click()
+    # if('no'=='yes'):
+    #     driver.find_element(By.ID,"change_owner_ship_yes").click()
+    # else:
+    #     driver.find_element(By.ID,"change_owner_ship_no").click()
 
     #Do you have previous policy(radio)
-    if ('no'=='yes'):
-        driver.find_element(By.ID,"previous_policy_yes").click()
+    # if ('no'=='yes'):
+    #     driver.find_element(By.ID,"previous_policy_yes").click()
+    # else:
+    #     driver.find_element(By.ID,"previous_policy_no").click()  
+
+    #OWNER DETAILS 
+
+    #Salutation(dd)
+    sal=driver.find_element(By.XPATH,"//label[contains(text(),'Salutation')]/following-sibling::select")
+    Select(sal).select_by_visible_text("Miss")
+
+    #First Name
+    fn=driver.find_element(By.XPATH,"//input[@formcontrolname='owner_first_name']")
+    fn.send_keys('ABCD')
+
+    #Middle Name
+    mn=driver.find_element(By.XPATH,"//input[@formcontrolname='owner_middle_name']")
+    mn.send_keys('efgh')
+
+    #Last Name
+    ln=driver.find_element(By.XPATH,"//input[@formcontrolname='owner_last_name']")
+    ln.send_keys('hijk')
+
+    #Mobile No.
+    mob=driver.find_element(By.XPATH,"//label[contains(text(),'Mobile No.')]/preceding-sibling::input")
+    mob.send_keys('1245678931')
+
+    #Gender(radio)
+    if ('Female'=='Female'):
+        driver.find_element(By.ID,"owner_gender_female").click()
+    elif('Male'=='Male'):
+        driver.find_element(By.ID,"owner_gender_male").click()
     else:
-        driver.find_element(By.ID,"previous_policy_no").click()  
+        driver.find_element(By.ID,"owner_gender_other").click()    
+
+    #Address 1
+    mob=driver.find_element(By.XPATH,"//label[contains(text(),'Address 1 (H.no/building)')]/preceding-sibling::input")
+    mob.send_keys('saleem')
+
+    #Address 2
+    mob=driver.find_element(By.XPATH,"//label[contains(text(),'Address 2(Area/Town/Locality)')]/preceding-sibling::input")
+    mob.send_keys('hyderabad')
+
+    #Pincode
+    mob=driver.find_element(By.XPATH,"//label[contains(text(),'Pin Code')]/preceding-sibling::input")
+    mob.send_keys('500035')
+
+    #City(dd)
+    cit=driver.find_element(By.XPATH,"//label[contains(text(),'City')]/following-sibling::ng-select")
+    cit.click()
+    opt='RANGAREDDY'.upper()
+    panels = driver.find_elements(By.CLASS_NAME, "ng-dropdown-panel")
+    print("Dropdown panels found:", len(panels))
+    for i, panel in enumerate(panels):
+        print(f"Panel {i+1}:")
+        print(panel.text)  # prints the visible text inside the panel
+        print(panel.get_attribute('outerHTML')) 
+    option = WebDriverWait(driver,10).until(EC.element_to_be_clickable((By.XPATH, f"//div[contains(@class,'ng-dropdown-panel')]//div[contains(@class,'ng-option')]//span[contains(text(),'{opt}')]")))
+    option.click()    
+
+    #NOMINEE DETAILS 
+
+    #Salutation
+    sal=driver.find_element(By.XPATH,"//label[contains(text(),'Salutation')]/following-sibling::select")
+    Select(sal).select_by_visible_text('Miss')
+
+    #First Name
+    fn=driver.find_element(By.XPATH,"//input[@formcontrolname='nominee_first_name']")
+    fn.send_keys('ABCD')
+
+    #Middle Name
+    mn=driver.find_element(By.XPATH,"//input[@formcontrolname='nominee_middle_name']")
+    mn.send_keys('efgh')
+
+    #Last Name
+    ln=driver.find_element(By.XPATH,"//input[@formcontrolname='nominee_last_name']")
+    ln.send_keys('hijk')
+
+    #Age
+    age=driver.find_element(By.XPATH,"//label[contains(text(),'Age')]/preceding-sibling::input")
+    age.send_keys('50')
+
+    #Select Relationship
+    sal=driver.find_element(By.XPATH,"//label[contains(text(),'Relation')]/following-sibling::select")
+    Select(sal).select_by_visible_text('Mother')
+
+    #
+
+
+
+
 
 
 
